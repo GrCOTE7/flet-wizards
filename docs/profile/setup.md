@@ -1,5 +1,3 @@
-<!-- generated-from-hash: 6a72a65b1afeb12d -->
-
 # Setup de Perfil
 
 > Wizard de onboarding com identidade, interesses e preferências.

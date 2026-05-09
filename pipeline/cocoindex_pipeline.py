@@ -4,7 +4,7 @@ Lê todos os `WizardMeta` do registry (populado pelos imports dos
 módulos de wizards) e produz, na raiz do repo:
 
   - `docs/<categoria>/<template>.md` — um arquivo por template
-  - `README.md` — visão geral com tabela de todos os templates
+  - `README.md` — visão geral com badges, tabela e blocos de uso
 
 Disparado via GitHub Actions em commits que alteram `src/wizards/`.
 A chave da OpenAI vem de `OPENAI_API_KEY` (secret do repositório).
@@ -12,10 +12,11 @@ A chave da OpenAI vem de `OPENAI_API_KEY` (secret do repositório).
 ## Idempotência
 
 Cada doc gerado começa com um marker `<!-- generated-from-hash: XXX -->`
-contendo o hash SHA-256 (16 chars) da meta serializada. Antes de chamar
-OpenAI, o pipeline compara o hash corrente com o do arquivo existente:
-se igual, pula (sem custo). Se diferente ou se o arquivo não existe,
-regenera. README é sempre re-renderizado (não usa OpenAI).
+contendo o hash SHA-256 (16 chars) da meta serializada (incluindo
+`class_name` e `module_path` derivados). Antes de chamar OpenAI, o
+pipeline compara o hash corrente com o do arquivo existente: se igual,
+pula (sem custo). Se diferente ou se o arquivo não existe, regenera.
+README é sempre re-renderizado (não usa OpenAI).
 
 ## Status
 
@@ -67,42 +68,103 @@ MODEL = "gpt-4o-mini"
 HASH_MARKER = "<!-- generated-from-hash: "
 HASH_END = " -->"
 
+
+def _class_name(meta_id: str) -> str:
+    """`auth.login` → `AuthLoginWizard`. Convenção fixa do projeto."""
+    parts = meta_id.split(".")
+    return "".join(p.capitalize() for p in parts) + "Wizard"
+
+
+def _module_path(meta_id: str) -> str:
+    """`auth.login` → `wizards.auth.login`."""
+    return f"wizards.{meta_id}"
+
+
 SYSTEM_PROMPT = """Você é um gerador de documentação técnica para uma biblioteca Python de wizards multi-step em Flet.
 
-Receberá um JSON com a metadata de um template (id, nome, categoria, descrição, steps, plataformas suportadas, schema de retorno do on_complete).
+Receberá um JSON com a metadata de um template:
+- `id`, `name`, `category`, `description`
+- `steps`: lista de nomes dos steps na ordem
+- `platforms`: lista de plataformas suportadas
+- `on_complete_schema`: dict com os campos retornados ao callback de conclusão
+- `class_name`: NOME REAL DA CLASSE PYTHON do wizard
+- `module_path`: caminho de import do módulo
 
-Devolva APENAS Markdown em português, técnico e direto, com EXATAMENTE esta estrutura:
+Devolva APENAS Markdown em português, técnico e direto, com EXATAMENTE esta estrutura (sem nenhum texto fora dela):
 
-# {name}
+# <use o valor real de `name`>
 
-> {description}
+> <use o valor real de `description`>
 
 ## Steps
 
-Tabela com colunas `#` e `Nome` listando cada step na ordem.
+Tabela Markdown com colunas `#` e `Nome` listando cada step na ordem (1-indexed).
+
+## Campos por step
+
+Para cada step, uma subseção `### <N>. <nome do step>` listando os campos visíveis nesse step.
+
+Regras:
+- Distribua os campos de `on_complete_schema` pelos steps inferindo pelo nome do step (ex: step "Acesso" tem credenciais; step "Perfil" tem nome/papel; step "Confirmação" só revisa).
+- Cada campo aparece em UM step só.
+- Quando um step só revisa/confirma sem capturar dados novos, escreva exatamente: `_Não captura dados novos — apenas revisa o que foi preenchido._`
+- Formato dos itens: `- **<nome_do_campo>** (`<tipo>`) — descrição curta inferida do contexto`
 
 ## Plataformas suportadas
 
-Lista bullet das plataformas (ex: Windows, macOS, Linux, Android, iOS).
+Lista bullet das plataformas em nomes amigáveis (Windows, macOS, Linux, Android, iOS, etc).
 
 ## Retorno do `on_complete`
 
-Tabela com colunas `Campo` e `Tipo` derivada do schema. Quando o schema estiver vazio, escreva "Nenhum dado é retornado.".
+Tabela Markdown com colunas `Campo` e `Tipo` derivada de `on_complete_schema`. Se o schema for vazio, escreva: `_Nenhum dado é retornado._`
 
 ## Uso
 
-Bloco de código Python concreto mostrando como instanciar o wizard com `theme=`, `on_complete=` e tratando o callback. Use `from wizards.<categoria>.<arquivo> import <ClasseWizard>`.
+Bloco de código Python completo. EXEMPLO de referência (para um wizard hipotético com `class_name="AuthLoginWizard"`, `module_path="wizards.auth.login"`, `on_complete_schema={"email": "str"}`):
+
+```python
+import flet as ft
+from wizards.auth.login import AuthLoginWizard
+from wizards.core import WizardTheme
+
+
+async def main(page: ft.Page) -> None:
+    async def on_complete(data: dict) -> None:
+        print(data["email"])
+
+    page.render(lambda: AuthLoginWizard(
+        theme=WizardTheme.SLATE,
+        on_complete=on_complete,
+    ))
+
+
+ft.run(main)
+```
+
+Para o wizard recebido neste request, gere um bloco com a MESMA estrutura, substituindo:
+- `wizards.auth.login` pelo `module_path` REAL
+- `AuthLoginWizard` (nas DUAS ocorrências) pelo `class_name` REAL
+- O único `print(data["email"])` por UMA LINHA `print(data["<chave>"])` para CADA chave de `on_complete_schema`, usando os nomes exatos das chaves
+
+USE LITERALMENTE os valores de `class_name` e `module_path` do JSON. NUNCA invente nomes. NUNCA use placeholders como `<module_path>`, `[seu app]` ou `YourWizard` no código final.
 
 ## Mock no gallery
 
-Uma frase explicando que o wizard expõe `mock=True` para abrir já no último step de dados com valores fictícios — útil em previews.
+Uma única frase explicando que o wizard expõe `mock=True` para abrir já no último step de dados com valores fictícios — útil em previews dentro do gallery showcase.
 
-NÃO inclua introdução, conclusão, header HTML ou qualquer texto fora dessa estrutura. NÃO use placeholders genéricos como `[seu app]`; use exemplos concretos baseados nos campos do schema.
+REGRAS GERAIS:
+- NÃO inclua introdução, conclusão, badges, HTML, sumário ou qualquer texto fora dessa estrutura.
+- NÃO traduza nomes de campos do schema.
+- NÃO use bold/italic em headers (ex: `# **<name>**` é PROIBIDO).
 """
 
 
 def _meta_to_dict(meta: WizardMeta) -> dict:
-    """Serialização canônica usada tanto na hash quanto no payload OpenAI."""
+    """Serialização canônica usada na hash E no payload OpenAI.
+
+    Inclui `class_name` e `module_path` derivados — ambos vão pro hash,
+    então renomear convenção dispara regeneração de todos os docs.
+    """
     return {
         "id": meta.id,
         "name": meta.name,
@@ -111,6 +173,8 @@ def _meta_to_dict(meta: WizardMeta) -> dict:
         "steps": list(meta.steps),
         "platforms": [p.name for p in meta.platforms],
         "on_complete_schema": dict(meta.on_complete_schema),
+        "class_name": _class_name(meta.id),
+        "module_path": _module_path(meta.id),
     }
 
 
@@ -156,11 +220,19 @@ def _generate_doc(meta: WizardMeta, client) -> str:
 
 
 def _render_readme(metas: list[WizardMeta]) -> str:
-    """Tabela de todos os templates + bloco de uso. Sem chamada OpenAI."""
+    """README com badges, descrição expandida, tabela e blocos de uso. Sem OpenAI."""
     lines = [
         "# flet-wizards",
         "",
-        "Gallery de templates de wizard multi-step para Flet, prontos para reuso.",
+        "[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)",
+        "[![Flet](https://img.shields.io/badge/flet-0.85+-purple.svg)](https://flet.dev)",
+        "[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)",
+        "",
+        "Coleção de templates de wizard multi-step prontos para reutilizar em apps Flet.",
+        "Cada template é uma `@ft.component` autocontida com estado reativo (`@ft.observable`),",
+        "sistema de temas (Slate / Emerald / Rose / Azure), validação de plataforma e callback",
+        "`on_complete` tipado. Inclui um gallery showcase estilo Microsoft Store para visualizar",
+        "todos os templates ao vivo durante o desenvolvimento.",
         "",
         "## Templates disponíveis",
         "",
@@ -174,6 +246,15 @@ def _render_readme(metas: list[WizardMeta]) -> str:
                 f"| {cat} | [{meta.name}]({doc_link}) | {len(meta.steps)} | {meta.description} |"
             )
     lines += [
+        "",
+        "## Instalação",
+        "",
+        "```bash",
+        "# em breve no PyPI",
+        "# pip install flet-wizards",
+        "```",
+        "",
+        "Por enquanto, clone o repo e use `uv sync` para instalar as dependências.",
         "",
         "## Uso rápido",
         "",

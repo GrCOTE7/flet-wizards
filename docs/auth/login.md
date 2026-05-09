@@ -1,5 +1,3 @@
-<!-- generated-from-hash: 9dd98340c63ea86c -->
-
 # Login Clássico
 
 > Wizard de login com e-mail e senha em dois steps.

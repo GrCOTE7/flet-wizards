@@ -1,5 +1,3 @@
-<!-- generated-from-hash: 228332a1e13d3ccf -->
-
 # Recuperar Senha
 
 > Wizard de recuperação de senha com código de verificação.

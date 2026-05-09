@@ -1,5 +1,3 @@
-<!-- generated-from-hash: 0af370786c8bccf7 -->
-
 # Cadastro
 
 > Wizard de cadastro com conta, perfil e confirmação.

@@ -1,5 +1,3 @@
-<!-- generated-from-hash: f0bf5b6c241f0f5c -->
-
 # Editar Perfil
 
 > Wizard de edição de perfil com diff visual no resumo.

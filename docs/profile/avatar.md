@@ -1,5 +1,3 @@
-<!-- generated-from-hash: 451c4f981d96dc19 -->
-
 # Avatar
 
 > Wizard de configuração de avatar com 3 origens (arquivo, URL, iniciais).
