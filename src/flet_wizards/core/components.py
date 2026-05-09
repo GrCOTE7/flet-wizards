@@ -1,4 +1,4 @@
-"""Primitivas de UI compartilhadas por todos os wizards.
+"""Primitivas de UI compartilhadas por todos os flet_wizards.
 
 Funções puras que recebem cores de tema e devolvem controles Flet.
 Não dependem de estado observável — quem renderiza decide quando

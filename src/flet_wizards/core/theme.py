@@ -1,4 +1,4 @@
-"""Sistema de temas dos wizards.
+"""Sistema de temas dos flet_wizards.
 
 Define `WizardTheme` como dataclass imutável com a paleta completa exigida
 por todos os componentes (`primary`, `secondary`, `accent`, `bg`, `surface`,

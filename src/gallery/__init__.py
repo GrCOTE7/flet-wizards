@@ -1,4 +1,4 @@
-"""Gallery app — showcase estilo Microsoft Store dos wizards.
+"""Gallery app — showcase estilo Microsoft Store dos flet_wizards.
 
 Expõe `GalleryState` (singleton observável compartilhado entre Sidebar,
 Card e GalleryShell para o tema corrente) e re-exporta `GalleryApp`
@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 
 import flet as ft
 
-from wizards.core import WizardTheme
+from flet_wizards.core import WizardTheme
 
 
 @ft.observable

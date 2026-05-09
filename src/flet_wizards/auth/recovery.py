@@ -19,7 +19,7 @@ from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
 
-from wizards.core import (
+from flet_wizards.core import (
     BaseWizardState,
     WizardFrame,
     WizardMeta,
@@ -28,7 +28,7 @@ from wizards.core import (
     primary_button,
     register,
 )
-from wizards.core.mock_data import AUTH_RECOVERY
+from flet_wizards.core.mock_data import AUTH_RECOVERY
 
 META = register(
     WizardMeta(

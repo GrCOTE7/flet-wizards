@@ -11,7 +11,7 @@ Item ativo destacado com `primary` do tema corrente, detectado via
 
 import flet as ft
 
-from wizards.core import WizardMeta, by_category, categories
+from flet_wizards.core import WizardMeta, by_category, categories
 
 from . import state
 

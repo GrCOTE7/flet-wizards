@@ -22,10 +22,10 @@ Estado global de tema vive em `gallery.state` (singleton observável)
 import flet as ft
 from loguru import logger
 
-from wizards.auth.login import AuthLoginWizard
-from wizards.auth.recovery import AuthRecoveryWizard
-from wizards.auth.register import AuthRegisterWizard
-from wizards.core import (
+from flet_wizards.auth.login import AuthLoginWizard
+from flet_wizards.auth.recovery import AuthRecoveryWizard
+from flet_wizards.auth.register import AuthRegisterWizard
+from flet_wizards.core import (
     SnackHost,
     THEMES_BY_NAME,
     WizardTheme,
@@ -33,9 +33,9 @@ from wizards.core import (
     by_id,
     show_success,
 )
-from wizards.profile.avatar import ProfileAvatarWizard
-from wizards.profile.edit import ProfileEditWizard
-from wizards.profile.setup import ProfileSetupWizard
+from flet_wizards.profile.avatar import ProfileAvatarWizard
+from flet_wizards.profile.edit import ProfileEditWizard
+from flet_wizards.profile.setup import ProfileSetupWizard
 
 from . import state
 from .card import WizardCard

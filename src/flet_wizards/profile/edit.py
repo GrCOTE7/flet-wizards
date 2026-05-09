@@ -22,7 +22,7 @@ from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
 
-from wizards.core import (
+from flet_wizards.core import (
     BaseWizardState,
     WizardFrame,
     WizardMeta,
@@ -31,7 +31,7 @@ from wizards.core import (
     primary_button,
     register,
 )
-from wizards.core.mock_data import PROFILE_EDIT
+from flet_wizards.core.mock_data import PROFILE_EDIT
 
 META = register(
     WizardMeta(

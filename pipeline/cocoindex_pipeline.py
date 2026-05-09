@@ -6,7 +6,7 @@ módulos de wizards) e produz, na raiz do repo:
   - `docs/<categoria>/<template>.md` — um arquivo por template
   - `README.md` — visão geral com badges, tabela e blocos de uso
 
-Disparado via GitHub Actions em commits que alteram `src/wizards/`.
+Disparado via GitHub Actions em commits que alteram `src/flet_wizards/`.
 A chave da OpenAI vem de `OPENAI_API_KEY` (secret do repositório).
 
 ## Idempotência
@@ -50,14 +50,14 @@ README_PATH = PROJECT_ROOT / "README.md"
 
 sys.path.insert(0, str(SRC_DIR))
 
-import wizards.auth.login  # noqa: E402, F401
-import wizards.auth.recovery  # noqa: E402, F401
-import wizards.auth.register  # noqa: E402, F401
-import wizards.profile.avatar  # noqa: E402, F401
-import wizards.profile.edit  # noqa: E402, F401
-import wizards.profile.setup  # noqa: E402, F401
+import flet_wizards.auth.login  # noqa: E402, F401
+import flet_wizards.auth.recovery  # noqa: E402, F401
+import flet_wizards.auth.register  # noqa: E402, F401
+import flet_wizards.profile.avatar  # noqa: E402, F401
+import flet_wizards.profile.edit  # noqa: E402, F401
+import flet_wizards.profile.setup  # noqa: E402, F401
 
-from wizards.core import (  # noqa: E402
+from flet_wizards.core import (  # noqa: E402
     WizardMeta,
     all_wizards,
     by_category,
@@ -76,8 +76,8 @@ def _class_name(meta_id: str) -> str:
 
 
 def _module_path(meta_id: str) -> str:
-    """`auth.login` → `wizards.auth.login`."""
-    return f"wizards.{meta_id}"
+    """`auth.login` → `flet_wizards.auth.login`."""
+    return f"flet_wizards.{meta_id}"
 
 
 SYSTEM_PROMPT = """Você é um gerador de documentação técnica para uma biblioteca Python de wizards multi-step em Flet.
@@ -120,12 +120,12 @@ Tabela Markdown com colunas `Campo` e `Tipo` derivada de `on_complete_schema`. S
 
 ## Uso
 
-Bloco de código Python completo. EXEMPLO de referência (para um wizard hipotético com `class_name="AuthLoginWizard"`, `module_path="wizards.auth.login"`, `on_complete_schema={"email": "str"}`):
+Bloco de código Python completo. EXEMPLO de referência (para um wizard hipotético com `class_name="AuthLoginWizard"`, `module_path="flet_wizards.auth.login"`, `on_complete_schema={"email": "str"}`):
 
 ```python
 import flet as ft
-from wizards.auth.login import AuthLoginWizard
-from wizards.core import WizardTheme
+from flet_wizards.auth.login import AuthLoginWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:
@@ -142,7 +142,7 @@ ft.run(main)
 ```
 
 Para o wizard recebido neste request, gere um bloco com a MESMA estrutura, substituindo:
-- `wizards.auth.login` pelo `module_path` REAL
+- `flet_wizards.auth.login` pelo `module_path` REAL
 - `AuthLoginWizard` (nas DUAS ocorrências) pelo `class_name` REAL
 - O único `print(data["email"])` por UMA LINHA `print(data["<chave>"])` para CADA chave de `on_complete_schema`, usando os nomes exatos das chaves
 
@@ -260,7 +260,7 @@ def _render_readme(metas: list[WizardMeta]) -> str:
         "",
         "```python",
         "import flet as ft",
-        "from wizards.auth.login import AuthLoginWizard",
+        "from flet_wizards.auth.login import AuthLoginWizard",
         "",
         "async def main(page: ft.Page):",
         "    page.render(lambda: AuthLoginWizard(on_complete=lambda d: print(d)))",

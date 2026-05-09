@@ -1,0 +1,50 @@
+name: publish
+
+# Dispara quando uma tag v* é empurrada (ex: v0.1.0, v0.2.0-rc1).
+# Usa Trusted Publisher (OIDC) — não precisa de PYPI_API_TOKEN.
+#
+# Setup único no PyPI antes do primeiro release:
+# https://pypi.org/manage/account/publishing/
+#   - PyPI project name: flet-wizards
+#   - Owner: Alisonsantos77
+#   - Repository: flet-wizards
+#   - Workflow filename: publish.yml
+#   - Environment name: pypi   (opcional — habilita reviewers/protections)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write   # exigido pelo OIDC do Trusted Publisher
+
+jobs:
+  build-and-publish:
+    name: Build and publish to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/flet-wizards
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+
+      - name: Build sdist + wheel
+        run: uv build
+
+      - name: Verify build artifacts
+        run: ls -la dist/
+
+      - name: Publish to PyPI via Trusted Publisher
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # Sem `with: password:` — usa OIDC token automaticamente

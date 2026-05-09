@@ -10,7 +10,7 @@ Dropa o GIF de preview por enquanto — fica como TODO até ter os assets.
 
 import flet as ft
 
-from wizards.core import WizardMeta
+from flet_wizards.core import WizardMeta
 
 from . import state
 

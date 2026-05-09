@@ -1,4 +1,4 @@
-"""Estado reativo base compartilhado por todos os wizards.
+"""Estado reativo base compartilhado por todos os flet_wizards.
 
 `BaseWizardState` é uma dataclass observável que centraliza:
 

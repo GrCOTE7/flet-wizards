@@ -24,7 +24,7 @@ from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
 
-from wizards.core import (
+from flet_wizards.core import (
     BaseWizardState,
     THEMES_BY_NAME,
     WizardFrame,
@@ -34,7 +34,7 @@ from wizards.core import (
     primary_button,
     register,
 )
-from wizards.core.mock_data import PROFILE_SETUP
+from flet_wizards.core.mock_data import PROFILE_SETUP
 
 META = register(
     WizardMeta(

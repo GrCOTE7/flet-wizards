@@ -1,4 +1,4 @@
-"""Registro central de metadados de wizards.
+"""Registro central de metadados de flet_wizards.
 
 `WizardMeta` é o contrato declarado por cada template no topo do seu módulo.
 Serve como fonte de verdade para:
