@@ -169,10 +169,14 @@ def StepCodigo(state: AuthRecoveryState) -> ft.Control:
             set_code(new_code)
             state.code = new_code
             page = ft.context.page
-            if val and i < CODE_LEN - 1 and refs[i + 1].current is not None:
-                page.run_task(refs[i + 1].current.focus)
-            elif not val and i > 0 and refs[i - 1].current is not None:
-                page.run_task(refs[i - 1].current.focus)
+            if val and i < CODE_LEN - 1:
+                nxt = refs[i + 1].current
+                if nxt is not None and nxt.page is not None:
+                    page.run_task(nxt.focus)
+            elif not val and i > 0:
+                prv = refs[i - 1].current
+                if prv is not None and prv.page is not None:
+                    page.run_task(prv.focus)
 
         return handler
 

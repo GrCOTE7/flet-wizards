@@ -156,10 +156,14 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
             set_code(new_code)
             state.code = new_code
             page = ft.context.page
-            if val and i < CODE_LEN - 1 and refs[i + 1].current is not None:
-                page.run_task(refs[i + 1].current.focus)
-            elif not val and i > 0 and refs[i - 1].current is not None:
-                page.run_task(refs[i - 1].current.focus)
+            if val and i < CODE_LEN - 1:
+                nxt = refs[i + 1].current
+                if nxt is not None and nxt.page is not None:
+                    page.run_task(nxt.focus)
+            elif not val and i > 0:
+                prv = refs[i - 1].current
+                if prv is not None and prv.page is not None:
+                    page.run_task(prv.focus)
 
         return handler
 
@@ -239,21 +243,13 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
 
 @ft.component
 def StepSuccess(state: AuthTwoFactorState) -> ft.Control:
-    """Confirmação visual — escudo verde + mensagem de acesso liberado."""
+    """Confirmação visual — escudo grande sem fundo + mensagem de acesso liberado."""
 
-    SUCCESS = "#22C55E"
     T = state.text()
     S = state.sub()
     P = state.primary()
 
-    shield = ft.Container(
-        width=96,
-        height=96,
-        border_radius=48,
-        bgcolor=SUCCESS,
-        alignment=ft.Alignment(0, 0),
-        content=ft.Text("🛡", size=48, color="#FFFFFF"),
-    )
+    shield = ft.Text("🛡", size=80, text_align=ft.TextAlign.CENTER)
 
     return ft.Column(
         [
