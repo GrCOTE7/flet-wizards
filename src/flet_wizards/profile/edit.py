@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -445,6 +446,9 @@ def ProfileEditWizard(
 
     async def _adapt(s: ProfileEditState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[ProfileEditWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete({"changed_fields": _changed_fields(s)})
         if inspect.isawaitable(result):

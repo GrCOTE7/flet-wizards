@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -523,6 +524,9 @@ def ProfileAvatarWizard(
 
     async def _adapt(s: ProfileAvatarState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[ProfileAvatarWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete(
             {"source": s.source, "value": _value_from_state(s)}

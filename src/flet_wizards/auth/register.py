@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -427,6 +428,9 @@ def AuthRegisterWizard(
 
     async def _adapt(s: AuthRegisterState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[AuthRegisterWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete(
             {"email": s.email, "name": s.name, "role": s.role}

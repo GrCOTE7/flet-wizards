@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -280,6 +281,9 @@ def AuthLoginWizard(
 
     async def _adapt(s: AuthLoginState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[AuthLoginWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete({"email": s.email})
         if inspect.isawaitable(result):

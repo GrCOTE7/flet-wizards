@@ -23,6 +23,7 @@ from dataclasses import dataclass, field
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -477,6 +478,9 @@ def ProfileSetupWizard(
 
     async def _adapt(s: ProfileSetupState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[ProfileSetupWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete(
             {

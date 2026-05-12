@@ -3,6 +3,23 @@
 Todas as mudanças relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o versionamento usa [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.2.0] — 2026-05-12
+
+Release focado em ampliar o catálogo com 3 wizards mobile-first e melhorar a sinalização de wizards rodando em modo demo.
+
+### Adicionado
+
+- **`AuthTwoFactorWizard`** (`flet_wizards.AuthTwoFactorWizard`) — verificação em 2 fatores mobile-first com 6 campos individuais de dígito, fundo geométrico via `ft.Stack` (sem imagem externa) e validação local exigindo os 6 dígitos antes de confirmar. Plataformas: ANDROID, IOS. `on_complete` recebe `{"code": str}`.
+- **`OnboardingWalkthroughWizard`** (`flet_wizards.OnboardingWalkthroughWizard`) — walkthrough fullscreen em 4 slides com cabeçalho "Pular", ícone grande em badge circular, dots de progresso e CTA pill ("Próximo →" / "Começar"). Plataformas: ANDROID, IOS. `on_complete` recebe `{}` (apenas sinaliza conclusão).
+- **`SurveyFeedbackWizard`** (`flet_wizards.SurveyFeedbackWizard`) — survey conversacional estilo Typeform em 3 perguntas: NPS 0-10 colorido por faixa, comentário livre com contador de caracteres (`COMMENT_LIMIT=280`) e categoria (Bug / Sugestão / Elogio) em cards grandes. Plataformas: ANDROID, IOS. `on_complete` recebe `{"nps": int, "comment": str, "category": str}`.
+- **Novos módulos públicos** `flet_wizards.onboarding` e `flet_wizards.survey`, exportando os wizards correspondentes a partir do package raiz.
+- **Mock data** para os 3 novos templates em `flet_wizards.core.mock_data`: `AUTH_TWO_FACTOR`, `SURVEY_FEEDBACK` (`OnboardingWalkthroughWizard` não precisa de mock data — apenas reposiciona `step`).
+
+### Alterado
+
+- **`on_complete=None` agora emite `logger.warning`** em todos os 9 wizards antes do early return silencioso, deixando claro nos logs que o template está rodando em modo demo. Mensagem padronizada: `"[NomeDoWizard]: on_complete não fornecido — wizard funcionará como demo"`.
+- **`preview/run.py`** revisado para subir limpo localmente — todos os 9 wizards podem ser inspecionados via `uv run python preview/run.py`.
+
 ## [0.1.1] — 2026-05-10
 
 Release de housekeeping focado em metadados PyPI e documentação. Sem mudanças funcionais nos wizards — a API pública é idêntica à 0.1.0.

@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Awaitable, Callable, ClassVar
 
 import flet as ft
+from loguru import logger
 
 from flet_wizards.core import (
     BaseWizardState,
@@ -386,6 +387,9 @@ def AuthRecoveryWizard(
 
     async def _adapt(s: AuthRecoveryState) -> None:
         if on_complete is None:
+            logger.warning(
+                "[AuthRecoveryWizard]: on_complete não fornecido — wizard funcionará como demo"
+            )
             return
         result = on_complete({"email": s.email})
         if inspect.isawaitable(result):

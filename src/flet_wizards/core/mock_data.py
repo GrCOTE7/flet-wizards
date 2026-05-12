@@ -54,3 +54,13 @@ PROFILE_AVATAR: dict = {
     "initials": "AL",
     "bg_color": "#7C6EF6",
 }
+
+SURVEY_FEEDBACK: dict = {
+    "nps": 9,
+    "comment": "O fluxo de revisão de PRs ficou muito mais rápido depois da última atualização.",
+    "category": "Elogio",
+}
+
+AUTH_TWO_FACTOR: dict = {
+    "code": "318274",
+}
