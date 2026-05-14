@@ -3,6 +3,20 @@
 Todas as mudanças relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o versionamento usa [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.2.1] — 2026-05-13
+
+Release de bugfixes focado em contraste, foco assíncrono nos campos de OTP e ajustes da paleta FOREST.
+
+### Corrigido
+
+- **`AuthTwoFactorWizard`** — guarda `try/except` em torno do `field.focus()` (chamada assíncrona pode lançar `AssertionError` se o controle ainda não estiver no tree); `on_submit` agora avança o foco para o próximo dígito após digitação. Auto-advance via `on_change` foi removido temporariamente até revisão.
+- **`primary_button`** — contraste de texto recalculado sobre `theme.primary` para garantir leitura em todos os modos (resolveu botões "invisíveis" na paleta FOREST).
+- **Paleta `WizardTheme.FOREST`** — `primary` retrabalhado para tom verde mais saturado com contraste adequado contra `bg` e `surface`; `accent` e `panel` rebalanceados.
+- **`ProfileAvatarWizard`** — cor do mock do avatar agora deriva de `theme.surface` em vez de hex fixo.
+- **Seletor de tema** — ring do tema ativo agora respeita `theme.primary` corrente.
+- **`badge`** em mock data — cores derivadas do tema (não mais hex hardcoded).
+- **`preview/run.py`** — layout sem `Container` constrangedor (preview redimensionável); imports diretos a partir de `src/flet_wizards/`.
+
 ## [0.2.0] — 2026-05-12
 
 Release focado em ampliar o catálogo com 3 wizards mobile-first e melhorar a sinalização de wizards rodando em modo demo.
